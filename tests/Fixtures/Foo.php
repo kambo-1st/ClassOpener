@@ -3,19 +3,29 @@
 namespace Kambo\Tests\Testing\ClassOpener\Fixtures;
 
 /**
- * Description of finalClass
+ * Mock of the final class
  *
  * @author  Bohuslav Simek <bohuslav@simek.si>
  * @license MIT
  */
 final class Foo
 {
-    public final function bar() : bool
+    /**
+     * Mock final method
+     *
+     * @return bool
+     */
+    final public function bar() : bool
     {
         return true;
     }
 
-    public function qux () : array
+    /**
+     * Mock non final method
+     *
+     * @return array
+     */
+    public function qux() : array
     {
         return [];
     }

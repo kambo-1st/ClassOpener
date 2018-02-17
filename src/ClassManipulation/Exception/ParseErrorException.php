@@ -2,13 +2,15 @@
 
 namespace Kambo\Testing\ClassOpener\ClassManipulation\Exception;
 
+use Exception;
+
 /**
- * Exception marker interface
+ * Parse error exception
  *
  * @author  Bohuslav Simek <bohuslav@simek.si>
  * @license MIT
  */
-interface ClassManipulationException
+class ParseErrorException extends Exception implements ClassManipulationException
 {
-
+    
 }

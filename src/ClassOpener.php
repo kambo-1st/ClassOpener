@@ -2,7 +2,7 @@
 
 namespace Kambo\Testing\ClassOpener;
 
-use Kambo\Testing\ClassOpener\Visitor\RemoveFinal;
+use Kambo\Testing\ClassOpener\ClassManipulation\Node\Visitor\RemoveFinal;
 
 use Kambo\Testing\ClassOpener\ClassManipulation\Locator\Reflection;
 use Kambo\Testing\ClassOpener\ClassManipulation\Reader\PhpParser;
@@ -19,7 +19,7 @@ use BetterReflection\SourceLocator\Type\AutoloadSourceLocator;
 use BetterReflection\Reflector\ClassReflector;
 
 /**
- * Description of ClassOpener
+ * Open the final class for the further modification eg.: for mocking
  *
  * @author  Bohuslav Simek <bohuslav@simek.si>
  * @license MIT
@@ -30,6 +30,13 @@ class ClassOpener
     private $transformer;
     private $patcher;
 
+    /**
+     * Constructor
+     *
+     * @param Reader      $reader      Source code class reader, which will parse code into AST.
+     * @param Transformer $transformer Transform class AST.
+     * @param Patcher     $patcher     Patch class with its modified version.
+     */
     public function __construct(Reader $reader, Transformer $transformer, Patcher $patcher)
     {
         $this->reader = $reader;
@@ -37,34 +44,52 @@ class ClassOpener
         $this->patcher = $patcher;
     }
 
+    /**
+     * Open the final class for the further modification
+     *
+     * @param string $className Name of the class, a fully qualified class name must be provided
+     *                          eg.: \foo\bar\qaz
+     *
+     * @return void
+     */
     public function open(string $className)
     {
-        $classAst = $this->reader->getAst($className);
+        $classAst = $this->reader->getNodes($className);
 
         $this->transformer->transform($className, $classAst, $this->getVisitors());
 
         $this->patcher->patch($classAst);
     }
 
-    private function getVisitors() : array 
-    {
-        return [
-            new RemoveFinal
-        ];
-    }
-
+    /**
+     * Create a new instance of the class with the default dependencies.
+     *
+     * @return self A new instance of self
+     */
     public static function create() : self
     {
         $astLocator = new AstLocator;
-        $locator    = new AutoloadSourceLocator($astLocator);
-        $reflector  = new ClassReflector($locator);
+        $locator = new AutoloadSourceLocator($astLocator);
+        $reflector = new ClassReflector($locator);
 
-        $locator = new Reflection($reflector);
+        $reflectionLocator = new Reflection($reflector);
 
-        $reader = new PhpParser($locator);
+        $reader = new PhpParser($reflectionLocator);
         $transformer = new Traverser(new NodeTraverser);
         $patcher = new EvalExecution;
 
         return new self($reader, $transformer, $patcher);
+    }
+
+    /**
+     * Get all visitors which will be applied to the class
+     *
+     * @return array
+     */
+    private function getVisitors() : array
+    {
+        return [
+            new RemoveFinal
+        ];
     }
 }

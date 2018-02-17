@@ -10,5 +10,5 @@ namespace Kambo\Testing\ClassOpener\ClassManipulation;
  */
 interface Transformer
 {
-    public function transform(string $className, $ast, array $visitors);
+    public function transform(string $className, array $nodes, array $visitors) : array;
 }

@@ -6,21 +6,26 @@ use PhpParser\PrettyPrinter\Standard;
 use Kambo\Testing\ClassOpener\ClassManipulation\Patcher;
 
 /**
- * Description of Eval
+ * Patch class with its modified version.
  *
- * Lorem ipsum dolor
- *
- * @package 
  * @author  Bohuslav Simek <bohuslav@simek.si>
  * @license MIT
  */
 class EvalExecution implements Patcher
 {
-    public function patch($classAst)
+    /**
+     * Replace global class definition with class defined in the provided nodes.
+     *
+     * @param Node[] $statmentNodes Array of statements
+     *
+     * @return void
+     */
+    public function patch(array $statmentNodes)
     {
         $prettyPrinter = new Standard;
-        $newClassCode  = $prettyPrinter->prettyPrintFile($classAst).PHP_EOL;
+        $newClassCode  = $prettyPrinter->prettyPrintFile($statmentNodes).PHP_EOL;
 
+        // Force PHP interpreter to use modified version of the class, by evaluating.
         eval('?>' . $newClassCode);
     }
 }

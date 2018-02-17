@@ -1,23 +1,44 @@
 <?php
 
-namespace Kambo\Testing\ClassOpener\Visitor;
+namespace Kambo\Testing\ClassOpener\ClassManipulation\Node\Visitor;
 
-use PhpParser\NodeVisitorAbstract;
+use Kambo\Testing\ClassOpener\ClassManipulation\Node\Visitor;
+
 use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 
 /**
- * Description of RemoveFinal
+ * Remove 'final' modifier from the class and its methods
  *
  * @author  Bohuslav Simek <bohuslav@simek.si>
  * @license MIT
  */
-class RemoveFinal extends NodeVisitorAbstract
+class RemoveFinal extends NodeVisitorAbstract implements Visitor
 {
     protected $parsingTargetClass = false;
-    public $className;
+    protected $className;
 
+    /**
+     * Set the name of the class into the visitor.
+     *
+     * @param string $className name of the class
+     *
+     * @return void
+     */
+    public function setClassName(string $className)
+    {
+        $this->className = $className;
+    }
+
+    /**
+     * Called when entering a node.
+     *
+     * @param Node $node Node
+     *
+     * @return void
+     */
     public function enterNode(Node $node)
     {
         if (($node instanceof ClassMethod) && $node->isPublic() && $this->parsingTargetClass) {
@@ -27,6 +48,13 @@ class RemoveFinal extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * Called when leaving a node.
+     *
+     * @param Node $node Node
+     *
+     * @return void
+     */
     public function leaveNode(Node $node)
     {
         if ($node instanceof Class_) {

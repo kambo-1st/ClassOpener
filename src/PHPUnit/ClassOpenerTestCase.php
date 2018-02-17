@@ -3,29 +3,46 @@
 namespace Kambo\Testing\ClassOpener\PHPUnit;
 
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Error;
 
 use Kambo\Testing\ClassOpener\ClassOpener;
 
 /**
- * Description of ClassOpener
+ * A TestCase which allows to mock final classes with annotation "@disableFinal"
+ * eg.: "@disableFinal \Foo\Bar" will allows to mock class \Foo\Bar
  *
  * @author  Bohuslav Simek <bohuslav@simek.si>
  * @license MIT
  */
 class ClassOpenerTestCase extends TestCase
 {
+
+    const ANNOTATION_NAME = 'disableFinal';
+
+    /**
+     * Open all class which are defined in the @disableFinal annotation
+     *
+     * @return void
+     */
     protected function checkRequirements()
     {
         parent::checkRequirements();
 
-        $classesNames = $this->extractDisableFinalNames($this->getAnnotations());
+        $classesNames = $this->extractDisableFinalNamesAnnotations($this->getAnnotations());
 
         if (!empty($classesNames)) {
             $this->openClasses($classesNames);
         }
     }
 
+    /**
+     * Open the provided final classes for the further modification
+     *
+     * @param array $classesNames Name of the classes which should be opened, a fully
+     *                            qualified class names must be provided in the array
+     *                            eg.: ['foo\bar\qaz', ...]
+     *
+     * @return void
+     */
     protected function openClasses(array $classesNames)
     {
         $ClassOpener = ClassOpener::create();
@@ -34,24 +51,17 @@ class ClassOpenerTestCase extends TestCase
         }
     }
 
-    protected function openClass(string $className)
+    /**
+     * Extract specific annotations from the class
+     *
+     * @param array $annotations Annotations for this test.
+     *
+     * @return array Extract annotation, empty array, if there are not any annotations
+     */
+    private function extractDisableFinalNamesAnnotations(array $annotations) : array
     {
-        $ClassOpener = ClassOpener::create();
-        $ClassOpener->open($className);
-    }
-
-    private function addError($msg, Exception $previous = null)
-    {
-        $testResultObject = $this->getTestResultObject();
-        $errorMessage = new Error($msg, 0, $previous);
-
-        $testResultObject->addError($this, $errorMessage, time());
-    }
-
-    private function extractDisableFinalNames($annotations) : array
-    {
-        if (isset($annotations['method']['disableFinal'])) {
-            return $annotations['method']['disableFinal'];
+        if (isset($annotations['method'][self::ANNOTATION_NAME])) {
+            return $annotations['method'][self::ANNOTATION_NAME];
         }
 
         return [];

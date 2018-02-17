@@ -18,9 +18,9 @@ use Kambo\Testing\ClassOpener\PHPUnit\ClassOpenerTestCase;
 class ClassOpenerTestCaseTest extends ClassOpenerTestCase
 {
     /**
-     * Test annotation reading
+     * Test annotation reading, class is in the annotation, it must be open
      *
-     * @disableFinal \Kambo\Tests\Testing\ClassOpener\Fixtures\Foo
+     * @disableFinal Kambo\Tests\Testing\ClassOpener\Fixtures\Foo
      */
     public function testAnnotation()
     {
@@ -29,7 +29,7 @@ class ClassOpenerTestCaseTest extends ClassOpenerTestCase
     }
 
     /**
-     * Test annotation reading
+     * Test annotation reading, there is no annotation -> nothing to change
      */
     public function testNoAnnotation()
     {
@@ -38,7 +38,7 @@ class ClassOpenerTestCaseTest extends ClassOpenerTestCase
     }
 
     /**
-     * Test annotation reading
+     * Test mocking of the opened class
      *
      * @disableFinal Kambo\Tests\Testing\ClassOpener\Fixtures\Foo
      */
