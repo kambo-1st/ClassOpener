@@ -1,0 +1,28 @@
+filter:
+    excluded_paths:
+        - 'tests/*'
+        - 'examples/*'
+checks:
+    php:
+        uppercase_constants: true
+        return_doc_comments: true
+        parameters_in_camelcaps: true
+        no_short_method_names:
+            minimum: '3'
+        no_short_variable_names:
+            minimum: '3'
+        classes_in_camel_caps: true
+
+coding_style:
+    php:
+        spaces:
+            around_operators:
+                concatenation: false
+build:
+    tests:
+        override:
+            -
+                command: 'vendor/bin/phpunit --coverage-clover=coverage'
+                coverage:
+                    file: 'some-file'
+                    format: 'clover'
