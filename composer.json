@@ -1,8 +1,8 @@
 {
-  "name": "kambo/ClassOpener",
-  "description": "Mock abstract",
-  "keywords": [
-  ],
+  "name": "kambo/classopener",
+  "type": "library",
+  "description": "Mock/stub final classes and methods in PHPUnit.",
+  "keywords": ["phpunit", "mock", "stub", "test double", "final", "class"],
   "license": "MIT",
   "require": {
     "php": ">=7.0.0",
