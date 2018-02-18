@@ -7,7 +7,7 @@ use PhpParser\NodeTraverserInterface;
 use Kambo\Testing\ClassOpener\ClassManipulation\Transformer;
 
 /**
- * Transform class AST, by applying provided visitors.
+ * Transform class nodes by applying provided visitors.
  *
  * @author  Bohuslav Simek <bohuslav@simek.si>
  * @license MIT
@@ -27,7 +27,7 @@ class Traverser implements Transformer
     }
 
     /**
-     * Constructor
+     * Transform class nodes by applying provided class visitors.
      *
      * @param string    $className A fully qualified class name
      * @param Node[]    $nodes     Array of AST nodes
